@@ -3,3 +3,14 @@
 ################################################################################
 
 /.vs/cat/v16/Server/sqlite3/storage.ide-wal
+/.vs/cat/v16/Server/sqlite3/storage.ide-shm
+/.vs/cat/v16/Server/sqlite3/storage.ide
+/.vs/cat/v16/Server/sqlite3/db.lock
+/.vs/cat/v16
+/bin/Debug
+/Migrations/bk
+/Migrations/201912171442112_init.resx
+/Migrations/201912171442112_init.Designer.cs
+/Migrations/201912171442112_init.cs
+/obj/Debug
+/packages/EntityFramework.6.4.0
