@@ -15,9 +15,9 @@
         <TextBlock x:Name="tblCatId" HorizontalAlignment="Left" Height="21" Margin="17,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="72" Text="CatId"/>
         <TextBlock x:Name="tblCatName" HorizontalAlignment="Left" Height="22" Margin="162,11,0,0" TextWrapping="Wrap" Text="CatName" VerticalAlignment="Top" Width="72"/>
         <TextBox x:Name="tbCatId" HorizontalAlignment="Left" Height="22" Margin="92,9,0,0" TextWrapping="Wrap" Text="{Binding CatId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=D5}" VerticalAlignment="Top" Width="53" IsReadOnly="True"/>
-        <TextBox x:Name="tbCatName" HorizontalAlignment="Left" Height="21" Margin="239,11,0,0" TextWrapping="Wrap" Text="{Binding CatName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213"/>
+        <TextBox x:Name="tbCatName" HorizontalAlignment="Left" Height="21" Margin="239,10,0,0" TextWrapping="Wrap" Text="{Binding CatName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" MaxLength="50"/>
         <TextBlock x:Name="tblHairPattern" HorizontalAlignment="Left" Height="22" Margin="15,35,0,0" TextWrapping="Wrap" Text="HairPattern" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="tbHairPattern" HorizontalAlignment="Left" Height="23" Margin="92,34,0,0" TextWrapping="Wrap" Text="{Binding HairPattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213"/>
+        <TextBox x:Name="tbHairPattern" HorizontalAlignment="Left" Height="23" Margin="92,34,0,0" TextWrapping="Wrap" Text="{Binding HairPattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="213" MaxLength="50"/>
         <StackPanel x:Name="pnGender" HorizontalAlignment="Left" Height="19" Margin="92,62,0,0" VerticalAlignment="Top" Width="213" Orientation="Horizontal">
             <RadioButton x:Name="rbGenderMale" Content="Male" Margin="10,0,0,0" IsChecked="{Binding Gender, Mode=TwoWay, Converter={StaticResource EnumToBoolean}, ConverterParameter=Male, UpdateSourceTrigger=PropertyChanged}"/>
             <RadioButton x:Name="rbGenderFemale" Content="Female" Margin="10,0,0,0" IsChecked="{Binding Gender, Mode=TwoWay, Converter={StaticResource EnumToBoolean}, ConverterParameter=Female, UpdateSourceTrigger=PropertyChanged}"/>
@@ -32,7 +32,7 @@
         </StackPanel>
         <TextBlock x:Name="tblBodyType" HorizontalAlignment="Left" Height="19" Margin="15,83,0,0" TextWrapping="Wrap" Text="BodyType" VerticalAlignment="Top" Width="72"/>
         <TextBlock x:Name="tblFaceType" HorizontalAlignment="Left" Height="22" Margin="15,108,0,0" TextWrapping="Wrap" Text="FaceType" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="tbFaceType" HorizontalAlignment="Left" Height="23" Margin="92,102,0,0" TextWrapping="Wrap" Text="{Binding FaceType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="329"/>
+        <TextBox x:Name="tbFaceType" HorizontalAlignment="Left" Height="23" Margin="92,102,0,0" TextWrapping="Wrap" Text="{Binding FaceType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="329" MaxLength="100"/>
         <StackPanel x:Name="pnBodyType_Copy" HorizontalAlignment="Left" Height="19" Margin="92,135,0,0" VerticalAlignment="Top" Width="329" Orientation="Horizontal">
             <RadioButton x:Name="rbAgeBaby" GroupName="Age" Content="Baby" Margin="10,0,0,0" IsChecked="{Binding Age, Mode=TwoWay, Converter={StaticResource EnumToBoolean}, ConverterParameter=Baby, UpdateSourceTrigger=PropertyChanged}"/>
             <RadioButton x:Name="rbAgeYoung" GroupName="Age" Content="Young" Margin="10,0,0,0" IsChecked="{Binding Age, Mode=TwoWay, Converter={StaticResource EnumToBoolean}, ConverterParameter=Young, UpdateSourceTrigger=PropertyChanged}"/>
@@ -42,7 +42,7 @@
         </StackPanel>
         <TextBlock x:Name="tblAge" HorizontalAlignment="Left" Height="19" Margin="15,135,0,0" TextWrapping="Wrap" Text="Age" VerticalAlignment="Top" Width="72"/>
         <TextBlock x:Name="tblPersonality" HorizontalAlignment="Left" Height="22" Margin="15,160,0,0" TextWrapping="Wrap" Text="Personality" VerticalAlignment="Top" Width="72"/>
-        <TextBox x:Name="tbPersonality" HorizontalAlignment="Left" Height="59" Margin="92,159,0,0" TextWrapping="Wrap" Text="{Binding Personality, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="329" />
+        <TextBox x:Name="tbPersonality" HorizontalAlignment="Left" Height="59" Margin="92,159,0,0" TextWrapping="Wrap" Text="{Binding Personality, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="329" MaxLength="200" />
         <TextBlock x:Name="tblLosgFlg" HorizontalAlignment="Left" Height="22" Margin="15,223,0,0" TextWrapping="Wrap" Text="Lostflg" VerticalAlignment="Top" Width="72"/>
         <CheckBox x:Name="cbLostFlag" Content="Disappearing, Recentry..." HorizontalAlignment="Left" Margin="92,223,0,0" VerticalAlignment="Top" IsChecked="{Binding LostFlg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <DataGrid x:Name="dgCatMaster" HorizontalAlignment="Left" Height="120" Margin="10,245,0,0" VerticalAlignment="Top" Width="745" ItemsSource="{Binding Cats, Mode=OneWay}" CanUserAddRows="False" AutoGenerateColumns="False" CurrentCellChanged="dgCatMaster_CurrentCellChanged" >
@@ -80,7 +80,7 @@
                 <ToolTip Content="Copy Entry"/>
             </ToolTipService.ToolTip>
         </Button>
-        <Button x:Name="btnErase" HorizontalAlignment="Left" Height="22" Margin="483,38,0,0" VerticalAlignment="Top" Width="25">
+        <Button x:Name="btnErase" HorizontalAlignment="Left" Height="22" Margin="483,38,0,0" VerticalAlignment="Top" Width="25" Click="btnErase_Click">
             <ToolTipService.ToolTip>
                 <ToolTip Content="Erase Entry"/>
             </ToolTipService.ToolTip>

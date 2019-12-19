@@ -54,12 +54,12 @@ namespace cat.Model {
         /// <summary>
         /// Cat Name
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(50, ErrorMessage = "Enter the Cat Name within 50 Bytes")]
         public string CatName { get; set; }
         /// <summary>
         /// HairPattern Name
         /// </summary>
-        [MaxLength(50)]
+        [MaxLength(50, ErrorMessage = "Enter the Hair Pattern within 50 Bytes")]
         public string HairPattern { get; set; }
         /// <summary>
         /// Gender Type
@@ -79,7 +79,7 @@ namespace cat.Model {
         /// <summary>
         /// FaceType Name
         /// </summary>
-        [MaxLength(100)]
+        [MaxLength(100, ErrorMessage = "Enter the Face Type within 100 bytes")]
         public string FaceType { get; set; }
         /// <summary>
         /// Age 
@@ -91,7 +91,7 @@ namespace cat.Model {
         /// <summary>
         /// Personal Note
         /// </summary>
-        [MaxLength(200)]
+        [MaxLength(200, ErrorMessage = "Enter the Personality within 50 Bytes")]
         public string Personality { get; set; }
         /// <summary>
         /// Lost Status
@@ -108,13 +108,32 @@ namespace cat.Model {
         /// </summary>
         [DefaultValue(DefaultValue = "GETDATE()")]
         public DateTime UpdateDate { get; set; }
+
+        /// <summary>
+        /// Copy Instance
+        /// </summary>
+        /// <param name="src">Src Instance</param>
+        public void CopyFrom(Cat src) {
+            this.CatId = src.CatId;
+            this.CatName = src.CatName;
+            this.HairPattern = src.HairPattern;
+            this.Gender = src.Gender;
+            this.BodyType = src.BodyType;
+            this.FaceType = src.FaceType;
+            this.Age = src.Age;
+            this.Personality = src.Personality;
+            this.LostFlag = src.LostFlag;
+            this.RegistDate = src.RegistDate;
+            this.UpdateDate = src.UpdateDate;
+        }
     }
     /// <summary>
     /// Cat Data for Display
     /// </summary>
     [NotMapped]
     public class CatDisplay : Cat {
-        /// <summary>
+
+         /// <summary>
         /// Return Gender Type Name
         /// </summary>
         public string GenderText {
@@ -185,5 +204,6 @@ namespace cat.Model {
         public CatDisplay Clone() {
             return (CatDisplay)MemberwiseClone();
         }
+
     }
 }

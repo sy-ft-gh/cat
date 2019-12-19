@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.Text;
+using System.Windows;
 
 using cat.Model;
 
@@ -10,20 +14,31 @@ namespace cat.View {
         /// <summary>
         /// Cat Mst Edit Data Field
         /// </summary>
-        private CatDisplay EditData;
+        private CatDisplay editData;
         /// <summary>
         /// Cat Mst List Data Field
         /// </summary>
         private List<CatDisplay> catList;
 
         /// <summary>
+        /// Get Propaty's Attribute
+        /// </summary>
+        /// <typeparam name="T">Attribute Type</typeparam>
+        /// <param name="propertyName">Property Name</param>
+        /// <returns>Custom Attribute's</returns>
+        public static T GetPropertyAttribute<T>(Type clsType, string propertyName) where T : Attribute {
+            var attrType = typeof(T);
+            var property = clsType.GetProperty(propertyName);
+            return (T)property.GetCustomAttributes(attrType, false).First();
+        }
+        /// <summary>
         /// Entry Field CatId I/F
         /// </summary>
         public int? CatId { 
-            get { return EditData.CatId; }
+            get { return editData.CatId; }
             set {
                 /// CatId <see cref="Model.Cat.CatId"/>
-                EditData.CatId = value == 0 ? null : value ;
+                editData.CatId = value == 0 ? null : value ;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(CatId));
             }
@@ -32,9 +47,9 @@ namespace cat.View {
         /// Entry Field CatName I/F
         /// </summary>
         public string CatName {
-            get { return EditData.CatName; }
+            get { return editData.CatName; }
             set {
-                EditData.CatName = value;
+                editData.CatName = value;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(CatName));
             }
@@ -43,9 +58,9 @@ namespace cat.View {
         /// Entry Field CatName I/F
         /// </summary>
         public string HairPattern {
-            get { return EditData.HairPattern; }
+            get { return editData.HairPattern; }
             set {
-                EditData.CatName = value;
+                editData.HairPattern = value;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(HairPattern));
             }
@@ -54,9 +69,9 @@ namespace cat.View {
         /// Entry Field Gender I/F
         /// </summary>
         public CatGenderType Gender {
-            get { return EditData.Gender; }
+            get { return editData.Gender; }
             set {
-                EditData.Gender = value;
+                editData.Gender = value;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(Gender));
             }
@@ -66,9 +81,9 @@ namespace cat.View {
         /// Entry Field BodyType I/F
         /// </summary>
         public CatBodyType BodyType {
-            get { return EditData.BodyType; }
+            get { return editData.BodyType; }
             set {
-                EditData.BodyType = value;
+                editData.BodyType = value;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(BodyType));
             }
@@ -77,9 +92,9 @@ namespace cat.View {
         /// Entry Field FaceType I/F
         /// </summary>
         public string FaceType {
-            get { return EditData.FaceType; }
+            get { return editData.FaceType; }
             set {
-                EditData.FaceType = value;
+                editData.FaceType = value;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(FaceType));
             }
@@ -88,9 +103,9 @@ namespace cat.View {
         /// Entry Field Age I/F
         /// </summary>
         public CatAge Age {
-            get { return EditData.Age; }
+            get { return editData.Age; }
             set {
-                EditData.Age = value;
+                editData.Age = value;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(Age));
             }
@@ -99,9 +114,9 @@ namespace cat.View {
         /// Entry Field FaceType I/F
         /// </summary>
         public string Personality {
-            get { return EditData.Personality; }
+            get { return editData.Personality; }
             set {
-                EditData.Personality = value;
+                editData.Personality = value;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(Personality));
             }
@@ -110,9 +125,9 @@ namespace cat.View {
         /// Entry Field Age I/F
         /// </summary>
         public bool LostFlg {
-            get { return string.IsNullOrEmpty(EditData.LostFlag); }
+            get { return string.IsNullOrEmpty(editData.LostFlag); }
             set {
-                EditData.LostFlag = value ? "1" : null;
+                editData.LostFlag = value ? "1" : null;
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(LostFlg));
             }
@@ -121,9 +136,9 @@ namespace cat.View {
         /// Editing Field Datas I/F
         /// </summary>
         public CatDisplay CatEdit { 
-            get { return EditData; }
+            get { return editData; }
             set {
-                this.EditData = value.Clone();
+                this.editData = value.Clone();
                 //Post Change Event  
                 this.OnPropertyChanged(nameof(CatId));
                 this.OnPropertyChanged(nameof(CatName));
@@ -154,25 +169,47 @@ namespace cat.View {
         /// All clear Editing Fields 
         /// </summary>
         public void ClearEdit() {
-            // TODO: TBD Entry Default.
             this.CatEdit = new CatDisplay { Gender = CatGenderType.Unknown, BodyType = CatBodyType.Small, Age = CatAge.Unknown };
+        }
+        public void CopyEdit() {
+            /// Clear ViewData's CatId <see cref="Model.Cat.CatId"/>
+            this.CatId = null;
+        }
+
+        /// <summary>
+        /// Validate And Get Entry Data
+        /// </summary>
+        /// <returns>Succeed-> Edited Data, Failure -> null </returns>
+        public Cat ValidateEntry() {
+            var CatNameProp = GetPropertyAttribute<MaxLengthAttribute>(typeof(Cat), nameof(Cat.CatName));
+            if (!string.IsNullOrEmpty(this.editData.CatName) && Encoding.Unicode.GetByteCount(this.editData.CatName) > CatNameProp.Length) {
+                MessageBox.Show(CatNameProp.ErrorMessage, "Cat Master",MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+            var HairPatternProp = GetPropertyAttribute<MaxLengthAttribute>(typeof(Cat), nameof(Cat.HairPattern));
+            if (!string.IsNullOrEmpty(this.editData.HairPattern) &&  Encoding.Unicode.GetByteCount(this.editData.HairPattern) > HairPatternProp.Length) {
+                MessageBox.Show(HairPatternProp.ErrorMessage, "Cat Master", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+            var FaceTypeProp = GetPropertyAttribute<MaxLengthAttribute>(typeof(Cat), nameof(Cat.FaceType));
+            if (!string.IsNullOrEmpty(this.editData.FaceType) && Encoding.Unicode.GetByteCount(this.editData.FaceType) > FaceTypeProp.Length) {
+                MessageBox.Show(FaceTypeProp.ErrorMessage, "Cat Master", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+            var PersonalityProp = GetPropertyAttribute<MaxLengthAttribute>(typeof(Cat), nameof(Cat.FaceType));
+            if (!string.IsNullOrEmpty(this.editData.Personality) && Encoding.Unicode.GetByteCount(this.editData.Personality) > PersonalityProp.Length) {
+                MessageBox.Show(PersonalityProp.ErrorMessage, "Cat Master", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+            
+
+            return (Cat)this.editData;
         }
 
         public CatsViewModel() {
-            // TODO: Delete Sample Code
-
-            // Sample Data for View 
-            List<CatDisplay> data = new List<CatDisplay>();
-            data.Add(new CatDisplay { CatId = 1, CatName = "Atari", HairPattern = "Ginger", Gender = CatGenderType.Male, BodyType = CatBodyType.Midium, FaceType = "Baby Face, Big ear", Age = CatAge.Young, Personality = "Talkative and sensitive", LostFlag = null });
-            data.Add(new CatDisplay { CatId = 2, CatName = "Atari2", HairPattern = "Ginger2", Gender = CatGenderType.Female, BodyType = CatBodyType.Small, FaceType = "2Baby Face, Big ear", Age = CatAge.Baby, Personality = "1Talkative and sensitive", LostFlag = "1" });
-            data.Add(new CatDisplay { CatId = 3, CatName = "Atari3", HairPattern = "Ginger3", Gender = CatGenderType.Unknown, BodyType = CatBodyType.Large, FaceType = "3Baby Face, Big ear", Age = CatAge.Adult, Personality = "2Talkative and sensitive", LostFlag = null });
-            data.Add(new CatDisplay { CatId = 4, CatName = "Atari4", HairPattern = "Ginger4", Gender = CatGenderType.Male, BodyType = CatBodyType.Huge, FaceType = "4Baby Face, Big ear", Age = CatAge.Old, Personality = "3Talkative and sensitive", LostFlag = "1" });
-            Cats = data;
-            // End Sample Data for View 
-
             // Data Init
             ClearEdit();
-            // TODO: List Init.
+            this.catList = null;
         }
         protected void OnPropertyChanged(string info) {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));

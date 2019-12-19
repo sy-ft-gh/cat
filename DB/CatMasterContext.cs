@@ -15,5 +15,13 @@ namespace cat.DB {
 
             base.OnModelCreating(modelBuilder);
         }
+        /// <summary>
+        /// Get DataBase Current DateTime
+        /// </summary>
+        /// <returns>Current DateTime</returns>
+        public DateTime GetDBDate() {
+            return this.Database.SqlQuery<DateTime>("SELECT GetDate()").Single();
+        }
+
     }
 }
