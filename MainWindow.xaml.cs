@@ -17,7 +17,12 @@ namespace cat {
         /// View Model
         /// </summary>
         private CatsViewModel vm = new CatsViewModel();
- 
+
+        /// <summary>
+        /// DB Context
+        /// </summary>
+        private CatMasterContext CatCntext = new CatMasterContext();
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -70,8 +75,7 @@ namespace cat {
 
             /// <see cref="Model.Cat.CatId"/>
             // 1.Start Trans
-            using (var context = new CatMasterContext())
-            using (var dbTransaction = context.Database.BeginTransaction(IsolationLevel.ReadCommitted)) {
+            using (var dbTransaction = CatCntext.Database.BeginTransaction(IsolationLevel.ReadCommitted)) {
                 string ErrorMessage = null;
                 try {
                     // 2.Reg or Upd Jdg (CatId > 0 -> Update else Reg)
@@ -81,21 +85,21 @@ namespace cat {
                         // Insert Record
                         Cat ins = new Cat();
                         ins.CopyFrom(cat);
-                        ins.UpdateDate = context.GetDBDate();
+                        ins.UpdateDate = CatCntext.GetDBDate();
                         ins.RegistDate = ins.UpdateDate;
-                        context.Cats.Add(ins);
-                        context.SaveChanges();
+                        CatCntext.Cats.Add(ins);
+                        CatCntext.SaveChanges();
                     } else {
                         // 3.2 Update
                         // Select And Lock Registed Data
-                        var RegistedData = context.Database.SqlQuery<Cat>("SELECT * FROM CATS WITH (UPDLOCK) WHERE CATID = " + cat.CatId.ToString()).ToList();
+                        var RegistedData = CatCntext.Database.SqlQuery<Cat>("SELECT * FROM CATS WITH (UPDLOCK) WHERE CATID = " + cat.CatId.ToString()).ToList();
                         // 3.2.1 Is Not Data
                         if (RegistedData.Count != 1) {
                             // Exit for Show deleted error
                             ErrorMessage = "This Data is Not Exists";
                         } else {
                             // 3.2.2 Is Data
-                            var upd = context.Cats.Single(x => x.CatId == cat.CatId);
+                            var upd = CatCntext.Cats.Single(x => x.CatId == cat.CatId);
                             // Check Update Time Is Modified
                             if (cat.UpdateDate > RegistedData.First().UpdateDate) {
                                 // Is Modified -> Over Write Confirm
@@ -103,8 +107,8 @@ namespace cat {
                             }
                             // Is Not Modified or Over Write -> Update Data
                             upd.CopyFrom(cat);
-                            upd.UpdateDate = context.GetDBDate();
-                            context.SaveChanges();
+                            upd.UpdateDate = CatCntext.GetDBDate();
+                            CatCntext.SaveChanges();
                         }
                     }
                 } catch (Exception ex) {
@@ -141,14 +145,13 @@ namespace cat {
             }
 
             // 1.Start Trans
-            using (var context = new CatMasterContext())
-            using (var dbTransaction = context.Database.BeginTransaction(IsolationLevel.ReadCommitted)) {
+            using (var dbTransaction = CatCntext.Database.BeginTransaction(IsolationLevel.ReadCommitted)) {
                 string ErrorMessage = null;
                 try {
                     // 2.Execute
                     // 2.1 Delete Check
                     // Select And Lock Registed Data
-                    var RegistedData = context.Database.SqlQuery<Cat>("SELECT * FROM CATS WITH (UPDLOCK) WHERE CATID = " + vm.CatId.ToString()).ToList();
+                    var RegistedData = CatCntext.Database.SqlQuery<Cat>("SELECT * FROM CATS WITH (UPDLOCK) WHERE CATID = " + vm.CatId.ToString()).ToList();
 
                     // 2.2.1 Is Not Data
                     // Exit for Show deleted error
@@ -156,15 +159,15 @@ namespace cat {
                         ErrorMessage = "Selected Data Is Deleted.";
                     } else {
                         // 2.2.2 Is Data
-                        var tgt = context.Cats.Single(x => x.CatId == vm.CatId);
+                        var tgt = CatCntext.Cats.Single(x => x.CatId == vm.CatId);
                         // Check Update Time Is Modified
                         if (cat.UpdateDate < tgt.UpdateDate) {
                             // Is Modified -> Confirm Delete (Continue or stop)
                             if (MessageBox.Show("Is Already UPDATED. Wanna Force Delete??", "Cat Master", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel) return;
                         }
                         // Is Not Modified or Force Delete
-                        context.Cats.Remove(tgt);
-                        context.SaveChanges();
+                        CatCntext.Cats.Remove(tgt);
+                        CatCntext.SaveChanges();
                     }
                 } catch (Exception ex) {
                     ErrorMessage = "Error Rized:" + ex.Message;
@@ -189,12 +192,11 @@ namespace cat {
         /// </summary>
         private void GetCats() {
             List<CatDisplay> dspList = new List<CatDisplay>();
-            using (var context = new CatMasterContext()) {
-                foreach (var cat in context.Cats.OrderBy(x => x.CatId)) {
-                    CatDisplay dsp = new CatDisplay();
-                    dsp.CopyFrom(cat);
-                    dspList.Add(dsp);
-                }
+
+            foreach (var cat in CatCntext.Cats.OrderBy(x => x.CatId)) {
+                CatDisplay dsp = new CatDisplay();
+                dsp.CopyFrom(cat);
+                dspList.Add(dsp);
             }
             vm.Cats = dspList; 
         }

@@ -125,7 +125,7 @@ namespace cat.View {
         /// Entry Field Age I/F
         /// </summary>
         public bool LostFlg {
-            get { return string.IsNullOrEmpty(editData.LostFlag); }
+            get { return !string.IsNullOrEmpty(editData.LostFlag); }
             set {
                 editData.LostFlag = value ? "1" : null;
                 //Post Change Event  
