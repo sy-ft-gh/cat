@@ -179,7 +179,7 @@ namespace cat {
                     if (string.IsNullOrEmpty(ErrorMessage)) {
                         dbTransaction.Commit();
                         this.GetCats();
-
+                        vm.ClearEdit();
                     } else {
                         dbTransaction.Rollback();
                         MessageBox.Show(ErrorMessage, "Cat Master", MessageBoxButton.OK, MessageBoxImage.Error);
