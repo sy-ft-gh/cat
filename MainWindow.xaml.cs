@@ -101,7 +101,7 @@ namespace cat {
                             // 3.2.2 Is Data
                             var upd = CatCntext.Cats.Single(x => x.CatId == cat.CatId);
                             // Check Update Time Is Modified
-                            if (cat.UpdateDate > RegistedData.First().UpdateDate) {
+                            if (cat.UpdateDate < RegistedData.First().UpdateDate) {
                                 // Is Modified -> Over Write Confirm
                                 if (MessageBox.Show("Is Already UPDATED. Wanna Over Write??", "Cat Master", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel) return;
                             }
@@ -120,6 +120,7 @@ namespace cat {
                     if (string.IsNullOrEmpty(ErrorMessage)) {
                         dbTransaction.Commit();
                         this.GetCats();
+                        vm.ClearEdit();
                     } else {
                         dbTransaction.Rollback();
                         MessageBox.Show(ErrorMessage, "Cat Master", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -178,6 +179,7 @@ namespace cat {
                     if (string.IsNullOrEmpty(ErrorMessage)) {
                         dbTransaction.Commit();
                         this.GetCats();
+
                     } else {
                         dbTransaction.Rollback();
                         MessageBox.Show(ErrorMessage, "Cat Master", MessageBoxButton.OK, MessageBoxImage.Error);
